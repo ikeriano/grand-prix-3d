@@ -6,3 +6,5 @@ ref/
 assets/snd/cabecera.m4a
 assets/snd/*.ogg
 assets/vid/
+android/assets/
+dist/

@@ -35,3 +35,23 @@ export const DICCIONARIO = [
   ['Tarambana', ['Persona alocada', 'Instrumento de cuerda', 'Fruta tropical'], 0],
   ['Pelele', ['Muñeco de paja', 'Piedra pulida', 'Cesta de mimbre'], 0],
 ];
+// Preguntas numéricas para La patata caliente: [pregunta, respuesta, mínimo, máximo] (texto original)
+export const NUMERICAS = [
+  ['Año en que se descubrió la penicilina', 1928, 1850, 1990], ['Año de la llegada de Colón a América', 1492, 1400, 1600], ['Metros de altura de la Torre Eiffel (sin antenas)', 300, 100, 500],
+  ['Número de huesos de un adulto', 206, 100, 300], ['Año del primer hombre en la Luna', 1969, 1940, 2000], ['Kilómetros de un maratón (redondeado)', 42, 10, 100],
+  ['Teclas de un piano de cola', 88, 40, 120], ['Grados de un ángulo recto', 90, 10, 180], ['Días de un año bisiesto', 366, 300, 400],
+  ['Número de provincias de España', 50, 20, 80], ['Año de inauguración de los Juegos Olímpicos de Barcelona', 1992, 1960, 2010], ['Minutos de un partido de fútbol sin descuento', 90, 30, 150],
+  ['Patas de 3 arañas', 24, 6, 40], ['Velocidad del sonido en m/s (redondeada a cientos)', 300, 100, 1000], ['Año de publicación del Quijote (primera parte)', 1605, 1500, 1700],
+];
+// Frases de Los Pegajosos con la pose de los dos saltadores (ángulos en radianes)
+const A = Math.PI;
+export const POSES = [
+  ['PASEAR AL PERRO', { body: 0, arms: [A * .15, A * .7], legs: [A * .4, A * .6] }, { body: A * .45, arms: [A * .5, A * .55], legs: [A * .5, A * .55], y: .75 }],
+  ['SUBIR ESCALERAS', { body: 0, arms: [-A * .3, A * .8], legs: [A * .15, A * .55], y: .7 }, { body: 0, arms: [-A * .3, A * .8], legs: [A * .15, A * .55], y: .4 }],
+  ['LEVANTAR PESAS', { body: 0, arms: [-A * .35, -A * .65], legs: [A * .35, A * .65] }, { body: 0, arms: [-A * .35, -A * .65], legs: [A * .35, A * .65] }],
+  ['JUGAR AL FÚTBOL', { body: -.2, arms: [A * .1, A * .9], legs: [A * .05, A * .55] }, { body: 0, arms: [-A * .05, -A * .95], legs: [A * .3, A * .7], y: .45 }],
+  ['TOCAR LA GUITARRA', { body: 0, arms: [A * .2, A * .05], legs: [A * .45, A * .55] }, { body: 0, arms: [-A * .5, A * .6], legs: [A * .35, A * .65] }],
+  ['NADAR A CROL', { body: A * .5, arms: [-A * .1, A * .9], legs: [A * .48, A * .52] }, { body: A * .5, arms: [A * .1, A * 1.1], legs: [A * .46, A * .54], y: .35 }],
+  ['BAILAR SEVILLANAS', { body: 0, arms: [-A * .6, -A * .25], legs: [A * .4, A * .5] }, { body: 0, arms: [-A * .75, -A * .4], legs: [A * .5, A * .6] }],
+  ['HACER UNA FOTO', { body: 0, arms: [-A * .1, A * 1.1], legs: [A * .4, A * .6] }, { body: 0, arms: [-A * .4, -A * .6], legs: [A * .35, A * .65] }],
+];

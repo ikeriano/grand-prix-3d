@@ -1,6 +1,7 @@
 // Flujo de los modos: Programa completo, Temporada, Entrenamiento, créditos.
 import { REG, runPrueba, LV, CATS } from './games/engine.js';
-import { say, sfx, playMusic, stopMusic } from './audio.js';
+import { say, sfx, playMusic, stopMusic, music, sting, chant } from './audio.js';
+import { playCabecera } from './cabecera.js';
 import { ETAPAS, CAST, COLORS, RIVALES, ALCALDES, PADRINOS, GANADORES } from './data.js';
 import { LINES } from './lines.js';
 const sleep = (ms) => new Promise((r) => setTimeout(r, window.__fast ? ms / 10 : ms));
@@ -15,9 +16,9 @@ export function createShow(S, getOpt) {
   async function credits(et, end) {
     const lines = end ? [`<b>Grand Prix 3D</b><br>remake de fans`, `Presentador<br><b>${hostName(et)}</b> (personaje virtual)`, `Copresentación<br><b>${et.cos.map((c) => CAST[c].name).join(' · ')}</b>`,
       `Árbitros<br><b>${CAST.ref1.name} · ${CAST.ref2.name}</b>`, et.dino ? `La vaquilla <b>${CAST.vaca.name}</b> · el dino <b>${CAST.dino.name}</b> · <b>${CAST.clown.name}</b>` : `La vaquilla <b>${CAST.vaca.name}</b>`,
-      `Creado por<br><b>Iker Rodriguez Tejedor</b>`, `Voces Piper TTS · Three.js<br>Música PROVISIONAL sintetizada`, `<small>Remake no oficial sin ánimo de lucro. Sin relación con RTVE, FORTA ni Europroducciones.</small>`]
+      `Creado por<br><b>Iker Rodriguez Tejedor</b>`, `Voces Piper TTS · Three.js<br>Música: cabecera del programa`, `<small>Remake no oficial sin ánimo de lucro. Sin relación con RTVE, FORTA ni Europroducciones.</small>`]
       : [`<b>Iker Rodriguez Tejedor</b><br>presenta`, `<b>GRAND PRIX 3D</b><br>${et.name} · ${et.years}`, `con <b>${hostName(et)}</b>`, `<small>Remake de fans · no oficial</small>`];
-    S.setAutoOrbit(true);
+    S.setAutoOrbit(true); if (end) music('creditos');
     for (const l of lines) { if (abort) return; await card(`<div class="cred">${l}</div>`, 1900); }
     S.setAutoOrbit(false);
   }
@@ -38,41 +39,60 @@ export function createShow(S, getOpt) {
   const SHOT = { vaquilla: 'vaca', fisica: 'bolera', piscina: 'pool', saber: 'host', yincana: 'arena', especial: 'board' };
   const INTRO = { vaquilla: 'h_vaca', fisica: 'h_rampa', piscina: 'h_piscina', saber: 'h_saber', yincana: 'h_yincana' };
   async function playOne(p, et, teams, value, isFinal) {
-    S.shot(p.id === 'pinguipato' ? 'pato' : SHOT[p.cat] || 'overview'); await L(isFinal ? 'h_final' : (INTRO[p.cat] || 'h_prueba'), hostName(et));
-    const me = teams[0]; let vacaOn = false, dorada = false;
-    // Comodines según etapa
+    S.shot(p.shot || (p.id === 'pinguipato' ? 'pato' : SHOT[p.cat]) || 'overview'); await L(isFinal ? 'h_final' : (INTRO[p.cat] || 'h_prueba'), hostName(et));
+    const me = teams[0]; let vacaOn = false, dorada = false, meUsesVaca = false;
     const rival = teams[1];
-    if (!isFinal && p.cat !== 'saber') {
-      if (et.comodin === 'supervaquilla' && rival.comodin > 0 && Math.random() < .5) { rival.comodin--; vacaOn = true; await L('h_super', hostName(et)); }
-      else if (et.comodin === 'campana' && Math.random() < .4) { sfx('bell'); vacaOn = true; await L('h_campana', hostName(et)); }
-      else if (et.comodin === 'dorada2' || et.comodin === 'dorada1') { vacaOn = true; if (me.dorada && await ask(`¿Usas la <b>Vaquilla dorada</b> en «${p.name}»? (+2 si ganas)`)) { me.dorada = 0; dorada = true; await L('h_dorada', hostName(et)); } }
-      else if (et.vaquilla === 'real' && p.cat === 'vaquilla') vacaOn = false;
+    if (!isFinal && p.cat !== 'saber' && et.comodin && teams.length === 2) {
+      // Pantalla partida con cuenta atrás de 5 s para decidir el comodín
+      const can = et.comodin === 'supervaquilla' ? me.comodin > 0 : (et.comodin === 'dorada2' || et.comodin === 'dorada1') ? me.dorada > 0 : et.comodin === 'cajas' ? me.comodin > 0 : false;
+      const rivalUses = et.comodin === 'supervaquilla' ? rival.comodin > 0 && Math.random() < .45 : (et.comodin === 'dorada2' || et.comodin === 'dorada1') ? rival.dorada > 0 && Math.random() < .3 : false;
+      if (et.comodin === 'campana') { if (Math.random() < .4) { sfx('bell'); vacaOn = true; await L('h_campana', hostName(et)); } }
+      else if (can || rivalUses) { await L('h_comodin', hostName(et)); const use = can ? await split(et, me, rival, p) : false;
+        if (et.comodin === 'supervaquilla' || et.comodin === 'cajas') { if (use) { me.comodin--; meUsesVaca = true; await L('h_super', hostName(et)); } if (rivalUses) { rival.comodin--; vacaOn = true; } }
+        else { if (use) { me.dorada = 0; dorada = true; await L('h_dorada', hostName(et)); } if (rivalUses) { rival.dorada = 0; rival.usingDorada = true; } } }
+      if (et.comodin === 'dorada2' || et.comodin === 'dorada1') vacaOn = vacaOn || et.comodin === 'dorada2';
     }
     const lvl = getOpt('ai') || 'normal';
     const rivalScores = teams.slice(1).map(() => Math.max(0, p.ai(lvl)));
     S.pause(true);
-    const r = await runPrueba(p, { color: COLORS[me.color], rivalColor: COLORS[rival.color], level: lvl, vaca: vacaOn && p.cat !== 'vaquilla', rivalScore: Math.max(...rivalScores), fast: window.__fast, bot: window.__bot, etapa: et, lowres: getOpt('quality') === 'media' });
+    await L(p.intro || 'h_preparados', hostName(et)); if (Math.random() < .5 || p.id === 'superbolos') chant(); sfx('whistle');
+    if (meUsesVaca) rivalScores.forEach((v, i) => { rivalScores[i] = Math.floor(v * .7); });
+    const r = await runPrueba(p, { color: COLORS[me.color], rivalColor: COLORS[rival.color], names: [me.name, rival.name], myColorName: me.color, onFlip: () => sfx('flip'), level: lvl, vaca: vacaOn && p.cat !== 'vaquilla', rivalScore: Math.max(...rivalScores), fast: window.__fast, bot: window.__bot, etapa: et, lowres: getOpt('quality') === 'media' });
     S.pause(false); S.shot('board');
-    const scores = [r.you, ...(p.id === 'capitanes' ? [r.rival] : rivalScores)];
+    const scores = [r.you, ...(p.id === 'capitanes' || p.live ? [r.rival] : rivalScores)];
     // reparto: 4 pueblos → 4/3/2/1 × valor; 2 pueblos → valor al ganador (empate: ambos)
     const order = scores.map((s, i) => [s, i]).sort((a, b) => b[0] - a[0]);
     if (teams.length > 2) order.forEach(([s, i], k) => { teams[i].pts += (teams.length - k) * value; });
-    else { const best = order[0][0]; scores.forEach((s, i) => { if (s === best) teams[i].pts += value; }); }
-    if (dorada && r.you > Math.max(...rivalScores)) me.pts += 2;
+    else { const best = order[0][0]; const tieAll = scores[0] === scores[1]; const P = (!isFinal && p.pts) || {};
+      if (tieAll && P.tie) { teams[0].pts += P.tie; teams[1].pts += P.tie; }
+      else scores.forEach((s, i) => { const win = s === best; teams[i].pts += win ? (P.win || value) : (P.lose || 0); if (P.comWin) teams[i].comodin = (teams[i].comodin || 0) + (win ? P.comWin : P.comLose); });
+      const cancel = tieAll && P.tieCancelsDorada;
+      if (dorada && !cancel && scores[0] > scores[1]) me.pts += 2;
+      if (rival.usingDorada && !cancel && scores[1] > scores[0]) rival.pts += 2; rival.usingDorada = false;
+      if (cancel && (dorada)) await card('<h3>Empate: la Vaquilla dorada se anula</h3>', 1800); }
     const winI = order[0][1]; const tie = teams.length === 2 && scores[0] === scores[1];
     sfx(tie ? 'whistle' : winI === 0 ? 'win' : 'lose');
     if (teams.length === 2) await L(tie ? 'h_empate' : teams[winI].color === 'azul' ? 'h_gana_azul' : 'h_gana_amar', hostName(et));
-    board(teams); await card(scoreHtml(teams, p.name), 2600);
+    board(teams); sting('trans'); await card(scoreHtml(teams, p.name), 2600);
     return r;
   }
   function scoreHtml(teams, title) { return `<h3>${title}</h3>` + teams.slice().sort((a, b) => b.pts - a.pts).map((t) => `<div class="srow" style="background:${COLORS[t.color]};color:${t.color === 'amarillo' ? '#3a1a00' : '#fff'}"><span>${t.name}${t.me ? ' (tú)' : ''}</span><b>${t.pts}</b></div>`).join(''); }
+  function split(et, me, rival, p) { // pantalla partida: izquierda azul, derecha amarilla, cuenta atrás 5 s
+    return new Promise((res) => { const blueMe = me.color !== 'amarillo';
+      const side = (t, mine) => `<div class="sp ${t.color}"><b>${t.name}</b><small>Alcalde: ${t.alc}</small>${mine ? '<button class="mbtn gold" id="spY">¡Usar comodín!</button>' : '<i>Pensando…</i>'}</div>`;
+      const el = document.getElementById('split'); el.innerHTML = (blueMe ? side(me, 1) + side(rival, 0) : side(rival, 0) + side(me, 1)) + `<div class="spc"><div id="spN">5</div><small>${p.name}</small></div>`; el.classList.remove('hidden');
+      let n = 5, used = false; const fin = () => { clearInterval(id); el.classList.add('hidden'); res(used); };
+      const id = setInterval(() => { n--; sfx('tick'); const e = document.getElementById('spN'); if (e) e.textContent = n; if (n <= 0) fin(); }, window.__fast ? 100 : 1000);
+      document.getElementById('spY').onclick = () => { used = true; sfx('brass'); fin(); };
+      if (window.__bot && Math.random() < .5) setTimeout(() => { used = true; fin(); }, 300); });
+  }
   function ask(html) { if (window.__bot) return Promise.resolve(Math.random() < .5); return new Promise((res) => { cardEl.innerHTML = `<div class="ask">${html}<div><button class="mbtn gold" id="aY">Sí</button><button class="mbtn" id="aN">No</button></div></div>`; cardEl.classList.remove('hidden');
     $('aY').onclick = () => { cardEl.classList.add('hidden'); res(true); }; $('aN').onclick = () => { cardEl.classList.add('hidden'); res(false); }; }); }
 
   async function programa(et, opts = {}) {
     abort = false; S.setEtapa(et); const tv = opts.tv !== false;
-    playMusic(getOpt('music') !== false);
-    if (tv && !opts.noCredits) await credits(et, false);
+    if (tv && !opts.noCredits) { stopMusic(); if (!S.modern) S.setEtapa({ ...et, bullring: false, dino: true, clown: true, vaquilla: 'botarga' });
+      if (!window.__fast) await playCabecera(S, et, { mode: getOpt('cabecera') || 'recreada' }); S.setEtapa(et); await credits(et, false); }
     S.shot('logo'); await sleep(1500); S.shot('host');
     await L(et.id === 'e1995' ? 'h_hola95' : et.navidad ? 'h_holanav' : 'h_hola', hostName(et));
     stopMusic();
@@ -89,7 +109,7 @@ export function createShow(S, getOpt) {
     for (let i = 0; i < list.length; i++) { if (abort) return; await playOne(list[i], et, teams, i < 2 ? 1 : i < 4 ? 2 : 3, false); }
     const fin = REG.find((p) => p.id === 'troncos'); await playOne(fin, et, teams, 6, true);
     const w = teams.slice().sort((a, b) => b.pts - a.pts)[0];
-    S.shot('logo'); sfx('fanfare'); playMusic(getOpt('music') !== false);
+    S.shot('logo'); sting('final');
     await card(`<h3>🏆 ¡Gana ${w.name}!</h3>` + scoreHtml(teams, 'Clasificación final'), 3500); await L('h_ganador', hostName(et));
     if (tv && !opts.noCredits) { await L('h_adios', hostName(et)); await credits(et, true); }
     stopMusic(); return teams;
@@ -114,6 +134,6 @@ export function createShow(S, getOpt) {
     else await card('<h3>¡Subcampeones!</h3>Un final precioso.', 3500);
   }
   async function entrenamiento(id, et) { S.setEtapa(et); const p = REG.find((x) => x.id === id); S.shot(SHOT[p.cat]); S.pause(true);
-    const r = await runPrueba(p, { color: COLORS[playerColor(et)], level: getOpt('ai') || 'normal', rivalScore: p.ai(getOpt('ai') || 'normal'), fast: window.__fast, bot: window.__bot, etapa: et }); S.pause(false); return r; }
-  return { programa, temporada, entrenamiento, credits, card, L, stop() { abort = true; }, board };
+    const r = await runPrueba(p, { color: COLORS[playerColor(et)], level: getOpt('ai') || 'normal', rivalScore: p.ai(getOpt('ai') || 'normal'), fast: window.__fast, bot: window.__bot, etapa: et, vaca: !!window.__vaca }); S.pause(false); return r; }
+  return { programa, temporada, entrenamiento, credits, card, L, split, stop() { abort = true; }, board };
 }

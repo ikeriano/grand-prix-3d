@@ -145,8 +145,24 @@ export function buildPlato2023(scene, low) {
     if (pen) add(new THREE.SphereGeometry(.7, 10, 8), M('#fff'), 0, 1.6, .4, dk).scale.set(.8, 1.2, .6);
     add(new THREE.ConeGeometry(.25, .7, 8).rotateX(Math.PI / 2), M('#ff8a1a'), 0, 3.1, .8, dk); ducks.push(dk); }
 
+  // Bailarines de la cabecera: patos y pingüinos con disfraz, 2 bolas hinchables (zorb) — solo visibles en la cabecera
+  const dancers = new THREE.Group(); dancers.visible = false; G.add(dancers); const dlist = [];
+  const yel = M('#ffd21a'), blk = M('#1a2a6a'), wht = M('#ffffff'), org = M('#ff8a1a');
+  const bodyG = new THREE.SphereGeometry(1, 10, 8), headG = new THREE.SphereGeometry(.62, 10, 8), beakG = new THREE.ConeGeometry(.22, .6, 6).rotateX(Math.PI / 2), footG = new THREE.BoxGeometry(.5, .15, .7);
+  for (let i = 0; i < (low ? 16 : 26); i++) { const d = new THREE.Group(); const pen = i % 2; const bm = pen ? blk : yel;
+    add(bodyG, bm, 0, 1.5, 0, d).scale.set(.9, 1.3, .9); add(headG, bm, 0, 3, 0, d); if (pen) add(bodyG, wht, 0, 1.4, .45, d).scale.set(.6, 1, .5);
+    add(beakG, org, 0, 2.9, .7, d); add(footG, org, -.35, .08, .3, d); add(footG, org, .35, .08, .3, d);
+    const a = i * 2.39, r = 3 + (i % 7) * 2.2; d.position.set(Math.cos(a) * r, 0, Math.sin(a) * r * .7 - 2); d.userData = { a, r, ph: Math.random() * 6 }; dancers.add(d); dlist.push(d); }
+  const zorbs = []; for (let i = 0; i < 2; i++) { const z = add(new THREE.SphereGeometry(1.8, 16, 12), new THREE.MeshStandardMaterial({ color: '#dff6ff', transparent: true, opacity: .35, roughness: .05 }), -4 + i * 8, 1.8, 3, dancers); zorbs.push(z); }
+  const inflat = []; for (let i = 0; i < 3; i++) { const f = new THREE.Group(); const st = tex(64, 64, (c) => { for (let k = 0; k < 8; k++) { c.fillStyle = k % 2 ? '#fff' : '#2a4ad8'; c.fillRect(0, k * 8, 64, 8); } });
+    add(new THREE.SphereGeometry(1.5, 14, 10), M('#fff', { map: st }), 0, 2, 0, f).scale.set(1, 1.15, 1); add(new THREE.SphereGeometry(1.1, 12, 8, 0, 6.3, 0, 1.6), yel, 0, 1, 0, f).rotation.x = Math.PI; add(headG, M('#f1c6a0'), 0, 3.6, 0, f).scale.setScalar(.6);
+    f.position.set(-3 + i * 3, 0, -1); dancers.add(f); inflat.push(f); }
+  function dance(t) { dlist.forEach((d, i) => { const u = d.userData; d.position.y = Math.abs(Math.sin(t * 4.2 + u.ph)) * .6; d.rotation.y = Math.sin(t * 1.5 + u.ph) * .8; d.rotation.z = Math.sin(t * 4.2 + u.ph) * .15;
+      const a = u.a + t * .15 * (i % 2 ? 1 : -1); d.position.x = Math.cos(a) * u.r; d.position.z = Math.sin(a) * u.r * .7 - 2; });
+    zorbs.forEach((z, i) => { z.position.x = -6 + i * 10 + Math.sin(t * .8 + i) * 4; z.rotation.z = -t * (i ? 1 : -1); }); inflat.forEach((f, i) => { f.position.y = Math.abs(Math.sin(t * 3 + i)) * .5; f.rotation.y = Math.sin(t * 2 + i) * .5; }); }
+
   // Personajes virtuales (presentador en el atril, copresentadora) — muñecos originales
-  return {
+  return { dancers, dance,
     G, gl, gr, screen, setTowns, castle, pool, desk, lectern, bowl, ball, pivot, ducks, pins, medal,
     update(t) { pivot.rotation.z = Math.sin(t * 1.1) * .35; pivot.rotation.x = Math.sin(t * .7) * .1; beams.forEach((b, i) => { b.rotation.z = Math.sin(t * .5 + i) * .25; b.rotation.x = Math.cos(t * .4 + i) * .2; });
       ducks.forEach((d, i) => { d.position.x = -6 + ((i * 4 + t * 1.5) % 16); d.rotation.z = Math.sin(t * 6 + i) * .1; }); water.position.y = 1.35 + Math.sin(t * 2) * .03; },

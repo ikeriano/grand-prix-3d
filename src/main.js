@@ -1,14 +1,17 @@
 import './gamemenu.js';
 import './games/pruebas.js';
+import './games/pruebas2.js';
 import { REG, CATS } from './games/engine.js';
 import { createSet, QLEVELS, QNAMES } from './set.js';
 import { createShow } from './show.js';
+import { hasVideo, playCabecera } from './cabecera.js';
+let VIDEO_OK = false; hasVideo().then((v) => { VIDEO_OK = v; });
 import { A, playMusic, stopMusic, setMusicVol, sfx, say, stopVoice, unlockAudio } from './audio.js';
 import { ETAPAS, ETAPA_DEF, VERSION, GANADORES, SPECIALS, CAST } from './data.js';
 import { LINES } from './lines.js';
 
 const Q = new URLSearchParams(location.search);
-window.__fast = Q.has('fast'); window.__bot = Q.has('bot');
+window.__fast = Q.has('fast'); window.__bot = Q.has('bot'); window.__vaca = Q.has('vaca'); window.__replay = Q.has('replay');
 const $ = (id) => document.getElementById(id);
 const quality = Q.get('q') || localStorage.getItem('gp_quality') || 'auto';
 const S = createSet($('app'), quality);
@@ -56,6 +59,7 @@ function launch(mode, arg) {
   unlockAudio();
   if (mode === 'tv') return run(() => show.programa(et(), { tv: true }));
   if (mode === 'quick') return run(() => show.programa(et(), { tv: false }));
+  if (mode === 'cabecera') return run(async () => { const e = et(); S.setEtapa({ ...e, bullring: false, dino: true, clown: true, vaquilla: 'botarga' }); await playCabecera(S, e, { mode: getOpt('cabecera') || 'recreada' }); S.setEtapa(e); });
   if (mode === 'temporada') return run(() => show.temporada(et()));
   if (mode === 'train') return run(() => show.entrenamiento(arg, et()));
   if (EXTRAS[mode]) return run(EXTRAS[mode]);
@@ -68,7 +72,7 @@ menu = GameMenu.create({
   theme: { '--m-btn-a': '#ff6a2a', '--m-btn-b': '#d8321a', '--m-border': '#ffe08a', '--m-tbtn': '#c8321ad9', '--m-tbtn-border': '#ffb86a', '--m-sub': '#fff0d0' },
   tag: () => `${et().emoji} ${et().name.toUpperCase()}`, title: { sub: 'El juego del verano', tap: 'Toca para empezar' },
   sound: (n) => sfx(n === 'start' ? 'fanfare' : 'tap'), onTitleTap: () => { unlockAudio(); if (getOpt('music') !== false) playMusic(true); },
-  onEnter: (s) => { if (s === 'play' || s === 'train') stopMusic(); },
+  onEnter: (sc) => { if ((sc === 'main') && getOpt('music') !== false && !A.musicEl && !A.music && A.ctx) playMusic(true); },
   install: { apk: 'GrandPrix3D.apk' }, launch,
   defaults: { etapa: ETAPA_DEF, music: true, voz: true, ai: 'normal', npruebas: 6, color: 0, pueblo: '', quality },
   screens: {
@@ -95,6 +99,7 @@ menu = GameMenu.create({
       { btn: 'Temporada', sub: 'Fase de programas, tabla general, semifinal, final y trofeo', launch: 'temporada' },
       { btn: 'Entrenamiento', sub: 'Elige cualquier prueba', go: 'train' },
       { btn: 'Partida rápida', sub: 'Sin cabecera ni créditos', launch: 'quick' },
+      { btn: 'Ver la cabecera', sub: 'La cabecera del programa recreada en 3D', launch: 'cabecera' },
       { h2: 'Etapa' },
       { themes: () => Object.values(ETAPAS).map((e) => ({ id: e.id, emoji: e.emoji, name: e.years })), key: 'etapa', def: ETAPA_DEF, onPick: () => S.setEtapa(et()) },
       { text: () => `<p>${et().desc}</p>` },
@@ -109,12 +114,13 @@ menu = GameMenu.create({
       { choice: 'etapa', label: '📺 Etapa', opts: Object.values(ETAPAS).map((e) => [e.id, e.years]), wrap: true, onChange: () => S.setEtapa(et()) },
     ] },
     options: { title: 'Opciones', options: () => [
-      { sino: 'music', def: true, label: '🎵 Música (provisional)', onChange: (on) => on ? playMusic(true) : stopMusic() },
+      { sino: 'music', def: true, label: '🎵 Música', onChange: (on) => on ? playMusic(true) : stopMusic() },
       { sino: 'voz', def: true, label: '🎤 Voces', onChange: (v) => { A.voiceOn = v; } },
       { field: 'pueblo', label: '🏘️ Tu pueblo', placeholder: 'Mi pueblo', max: 24 },
       { choice: 'ai', label: '🤖 Nivel del rival', opts: [['facil', 'Fácil'], ['normal', 'Normal'], ['dificil', 'Difícil']] },
       { fold: '🎬 Más opciones', items: [
         { block: '🏆 Pueblos ganadores', name: 'Toca uno para jugar con él', btns: GANADORES.map(([n, y]) => ({ label: `${n} (${y})`, run: (api) => { api.set('pueblo', n); api.go('options'); } })) },
+        { choice: 'cabecera', label: '🎬 Cabecera', opts: () => VIDEO_OK ? [['recreada', 'Recreada'], ['video', 'Vídeo original']] : [['recreada', 'Recreada']], def: 'recreada' },
         { sino: 'subs', def: false, label: '💬 Subtítulos grandes', onChange: (v) => document.body.classList.toggle('bigsub', v) },
       ] },
       { choice: 'quality', label: '✨ Calidad gráfica', opts: QLEVELS.map((l) => [l, QNAMES[l]]), wrap: true, onChange: (v) => { localStorage.setItem('gp_quality', v); setTimeout(() => location.reload(), 300); } },
@@ -128,7 +134,7 @@ menu = GameMenu.create({
     credits: { title: 'Créditos', text: () => `<p><b>Creado por</b><br>Iker Rodriguez Tejedor</p>
 <p><b>Personajes virtuales</b><br>${Object.values(CAST).map((c) => `${c.name} (${c.role})`).join(' · ')}</p>
 <p><b>Voces</b><br>Piper TTS (es_ES)</p><p><b>Motor 3D</b><br>Three.js · plató modelado por código</p>
-<p><b>Música</b><br>Tema PROVISIONAL sintetizado (se cambiará por la cabecera original)</p>
+<p><b>Música</b><br>Cabecera del programa (audio del vídeo original)</p>
 <p class="small">Remake no oficial hecho por un fan, sin ánimo de lucro. Grand Prix es un formato de Europroducciones emitido por RTVE y cadenas de FORTA. Sin relación oficial con el programa ni con sus cadenas.</p>` },
   },
 });

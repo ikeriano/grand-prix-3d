@@ -52,4 +52,13 @@ export const LINES = {
   c_vamos: ['co', '¡Vamos, vamos, que se acaba el tiempo!'],
   c_bien: ['co', '¡Qué bien lo han hecho!'],
   c_credits: ['co', 'Grand Prix tres D. Un remake de fans, sin relación con el programa original.'],
+  h_preparados: ['host', '¿Estáis preparados? Tres, dos, uno... ¡tiempo!'],
+  h_troncos: ['host', '¡Tres, dos, uno... Troncos locos!'],
+  h_bolos: ['host', 'Suerte, y preparamos el cronómetro. Dos minutos y medio.'],
+  h_mas: ['host', '¡Más!'], h_menos: ['host', '¡Menos!'], h_correcto: ['host', '¡Correcto! ¡Pasa el globo!'],
+  h_comodin: ['host', '¿Usáis el comodín? ¡Tenéis cinco segundos!'],
+  h_pegajosos: ['host', '¡A pegarse al muro! Treinta segundos para la pose.'],
+  h_pinguinos: ['host', '¡Pingüinos matemáticos! Atentos a la cuenta.'],
+  h_replay: ['host', '¡Vamos a verlo en la repetición!'], h_caido: ['host', '¡Madre mía! ¡Se ha caído!'], h_trompazo: ['host', '¡Qué trompazo! ¡Se pegan cada costalada!'],
+  g_izq: ['co', '¡Izquierda, izquierda!'], g_der: ['co', '¡Derecha, derecha!'], g_tira: ['co', '¡Corre, tira!'],
 };

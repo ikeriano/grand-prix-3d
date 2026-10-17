@@ -1,4 +1,4 @@
-// Plató 3D PROVISIONAL del Grand Prix (modular: cada zona es un grupo que se puede cambiar cuando lleguen las fotos).
+// Plató 3D del Grand Prix: etapa actual en plato2023.js; etapas clásicas aquí (modular: cada zona es un grupo que se puede cambiar cuando lleguen las fotos).
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { COLORS } from './data.js';
@@ -85,7 +85,7 @@ export function createSet(container, quality) {
   }
   drawBoard([{ name: 'Azul', color: 'azul', pts: 0 }, { name: 'Amarillo', color: 'amarillo', pts: 0 }]);
 
-  // --- Logo 3D (recreación provisional) ---
+  // --- Logo 3D (etapas clásicas) ---
   const logo = group('logo'); logo.position.set(0, 0, -20);
   const lc = document.createElement('canvas'); lc.width = 1024; lc.height = 384; const ltex = new THREE.CanvasTexture(lc); ltex.colorSpace = THREE.SRGBColorSpace;
   const shape = new THREE.Shape(); const w = 9, h = 3.2, r = 1.4; shape.moveTo(-w + r, -h); shape.lineTo(w - r, -h); shape.quadraticCurveTo(w, -h, w, -h + r); shape.lineTo(w, h - r); shape.quadraticCurveTo(w, h, w - r, h); shape.lineTo(-w + r, h); shape.quadraticCurveTo(-w, h, -w, h - r); shape.lineTo(-w, -h + r); shape.quadraticCurveTo(-w, -h, -w + r, -h);
@@ -161,11 +161,11 @@ export function createSet(container, quality) {
     if (orbit) orbit.update();
     if (walk.on) { walk.yaw -= walk.s * dt * 1.6; const dir = new THREE.Vector3(Math.sin(walk.yaw), 0, Math.cos(walk.yaw)).multiplyScalar(-walk.f * dt * 9); camera.position.add(dir); camera.position.y = 2.2;
       camera.lookAt(camera.position.x - Math.sin(walk.yaw), 2.2 + walk.pitch, camera.position.z - Math.cos(walk.yaw)); }
-    if (modern) P23.update(t);
+    if (modern) { P23.update(t); if (P23.dancers.visible) P23.dance(t); }
     ticks.forEach((f) => f(dt, t));
     renderer.render(scene, camera);
   }
   loop();
   addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
-  return { scene, camera, renderer, Z, shot, drawBoard, drawLogo, setEtapa, orbitMode, walkMode, walk, setAutoOrbit, ticks, get fps() { return fps; }, pause(v) { paused = v; }, chars: { host, co, vaca, dino, clown }, P23, setTowns: (a, b) => P23.setTowns(a, b) };
+  return { scene, camera, renderer, Z, shot, drawBoard, drawLogo, setEtapa, orbitMode, walkMode, walk, setAutoOrbit, ticks, get fps() { return fps; }, pause(v) { paused = v; }, chars: { host, co, vaca, dino, clown }, P23, cam(pos, look) { camT = 1; camera.position.set(...pos); const L = new THREE.Vector3(...look); camera.lookAt(L); camera.userData.look = L; }, get modern() { return modern; }, setTowns: (a, b) => P23.setTowns(a, b) };
 }

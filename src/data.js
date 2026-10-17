@@ -1,5 +1,5 @@
 // Grand Prix 3D — datos (etapas, pueblos, personajes). Todo original/virtual.
-export const VERSION = '0.1 (fase 1)';
+export const VERSION = '0.2';
 
 // Personajes virtuales (nombres inventados; ver NOTAS.md)
 export const CAST = {

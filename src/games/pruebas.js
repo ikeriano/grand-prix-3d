@@ -1,6 +1,8 @@
 // Primer lote de pruebas jugables. Para añadir una: prueba({...}) con start/frame/ai/bot.
 import { prueba, D, R, LV } from './engine.js';
-import { PREGUNTAS, DICCIONARIO } from './banco.js';
+import { PREGUNTAS, DICCIONARIO, NUMERICAS, POSES } from './banco.js';
+import { sfx } from '../audio.js';
+const vo = (k) => { if (window.__fast) return; try { const a = new Audio('assets/voz/' + k + '.mp3'); a.play().catch(() => {}); } catch (e) {} };
 const ri = (n) => Math.round(n);
 
 // ============ CON VAQUILLA ============
@@ -118,25 +120,6 @@ function platoBg(c, W, H) { // fondo del plató actual: pared rosa-azul con casa
     c.fillStyle = '#3a6ad8'; for (let r = 0; r < 2; r++) for (let k = 0; k < 2; k++) c.fillRect(x + 10 + k * w / 2, H * .55 - h + 14 + r * 44, w / 2 - 20, 30); }
   const f = c.createLinearGradient(0, H * .55, 0, H); f.addColorStop(0, '#8ad8f4'); f.addColorStop(1, '#c8f2ff'); c.fillStyle = f; c.fillRect(0, H * .55, W, H * .45);
   c.fillStyle = '#4fe0e8'; c.fillRect(0, H * .55, W, 6); }
-prueba({ id: 'bolera', name: 'Los superbolos', cat: 'fisica', unit: 'bolos', dur: 30, how: 'Empuja el balón gigante colgado de la cuerda: toca cuando vuelva a tus manos para que salga hacia los bolos. ¡Tira todos los que puedas!',
-  ai: (l) => ri(R(6, 11) * LV[l]),
-  start(g) { const s = g.s = { a: -1.0, va: 0, held: true, pins: [0, 1, 2, 3, 4].map((i) => ({ x: .58 + i * .085, dn: 0 })) };
-    g.onDown = () => { if (s.held && !g.ended) { s.held = false; s.va = 2.6 + Math.random() * .3; } }; },
-  bot(g) { if (g.s.held && Math.random() < .05) g.onDown(); },
-  frame(g) {
-    const { c, W, H } = g, s = g.s; platoBg(c, W, H);
-    c.fillStyle = '#2a5ad8'; c.fillRect(W * .5, H * .78, W * .48, H * .1); c.fillStyle = '#e2321e'; c.fillRect(W * .54, H * .72, W * .44, H * .07);
-    const px = W * .45, py = 0, L = H * .78;
-    if (!s.held) { s.va += -Math.sin(s.a) * 3.2 * g.dt; s.a += s.va * g.dt; if (s.a < -.95 && s.va < 0) { s.held = true; s.a = -1; s.va = 0; } }
-    const bx = px + Math.sin(s.a) * L, by = py + Math.cos(s.a) * L, br = Math.min(W, H) * .07;
-    s.pins.forEach((p) => { if (p.dn > 0) { p.dn -= g.dt; } else if (!s.held && Math.abs(bx - p.x * W) < br + 12 && by > H * .55) { p.dn = 2.2; g.score++; } pinGuy(c, p.x * W, H * .74, Math.min(1, H / 520), p.dn > 0, g.t); });
-    c.strokeStyle = '#ddd'; c.lineWidth = 2; c.beginPath(); c.moveTo(px, py); c.lineTo(bx, by); c.stroke();
-    beachBall(c, bx, by, br, s.a * 3);
-    D.person(c, px + Math.sin(-1) * L - 10, H * .9, 1.4, g.col, { armsUp: s.held });
-    if (s.held) D.text(c, '👆 ¡EMPUJA!', W * .2, H * .35, 28, '#ffd21a');
-    g.hud();
-  } });
-
 prueba({ id: 'pinguipato', name: 'Tiro al pingüi-pato', cat: 'fisica', unit: 'puntos', dur: 30, how: 'Patos y pingüinos desfilan bajo el toldo. Toca uno para lanzarle el balón de la cuerda. Pato 1 punto, pingüino 2. ¡Al árbitro no!',
   ai: (l) => ri(R(9, 16) * LV[l]),
   start(g) { const s = g.s = { list: [], next: 0, shot: null };
@@ -166,23 +149,6 @@ prueba({ id: 'pinguipato', name: 'Tiro al pingüi-pato', cat: 'fisica', unit: 'p
   } });
 
 // ============ PISCINA ============
-prueba({ id: 'troncos', name: 'Los troncos locos', cat: 'piscina', unit: 'metros', dur: 30, how: 'Cruza la piscina sobre el tronco que gira. Toca a izquierda o derecha para no caerte al agua.',
-  ai: (l) => ri(R(14, 24) * LV[l]),
-  start(g) { g.s = { tilt: 0, vt: 0, x: 0, fall: 0 }; g.onDown = (x) => { g.s.vt += (x < g.W / 2 ? -1 : 1) * 0.5; }; },
-  bot(g) { if (Math.random() < .25) g.onDown(g.s.tilt > 0 ? 0 : g.W); },
-  frame(g) {
-    const { c, W, H } = g, s = g.s; D.sky(c, W, H); D.water(c, 0, H * .6, W, H * .4, g.t);
-    if (s.fall > 0) { s.fall -= g.dt; if (s.fall <= 0) { s.tilt = 0; s.vt = 0; } }
-    else if (!g.ended) { s.vt += (Math.sin(g.t * 1.7) * .9 + Math.sin(g.t * 3.1) * .5 + s.tilt * 2.4) * g.dt * (1 + g.t / 40); s.vt *= .97; s.tilt += s.vt * g.dt;
-      if (Math.abs(s.tilt) > 1) { s.fall = 1.5; g.score = Math.max(0, g.score - 2); } else s.x += g.dt * .9; g.score = Math.max(g.score, ri(s.x)); }
-    const ly = H * .6; c.fillStyle = '#8a5a2a'; c.beginPath(); c.roundRect(-20, ly - 22, W + 40, 34, 17); c.fill();
-    c.strokeStyle = '#5a3a1a'; c.lineWidth = 3; for (let i = 0; i < W; i += 40) { const xx = (i - g.t * 120) % W + (i - g.t * 120 < 0 ? W : 0); c.beginPath(); c.moveTo(xx, ly - 20); c.lineTo(xx + 10, ly + 10); c.stroke(); }
-    if (s.fall > 0) { D.text(c, '¡AL AGUA! 💦', W / 2, H * .35, 40, '#fff'); c.fillStyle = '#fff'; for (let i = 0; i < 8; i++) { c.beginPath(); c.arc(W / 2 + R(-60, 60), ly + 30 + R(-10, 10), R(4, 10), 0, 7); c.fill(); } }
-    else D.person(c, W / 2, ly - 20, 1.6, g.col, { rot: s.tilt * .9, armsUp: true });
-    c.fillStyle = '#0006'; c.fillRect(W / 2 - 100, H - 40, 200, 14); c.fillStyle = Math.abs(s.tilt) > .7 ? '#ff5b4b' : '#8eff8e'; c.fillRect(W / 2 + s.tilt * 100 - 6, H - 44, 12, 22);
-    D.text(c, '◀', 40, H * .5, 50); D.text(c, '▶', W - 40, H * .5, 50); g.hud();
-  } });
-
 prueba({ id: 'salta', name: '¡Salta!', cat: 'piscina', unit: 'saltos', dur: 30, how: 'Una barra gigante gira sobre la piscina. Toca para saltar justo cuando llegue a tus pies.',
   ai: (l) => ri(R(9, 16) * LV[l]),
   start(g) { g.s = { a: 0, jump: 0, fall: 0, sp: 1.6 }; g.onDown = () => { if (g.s.jump <= 0 && g.s.fall <= 0) g.s.jump = .7; }; },
@@ -277,7 +243,6 @@ function quiz(id, name, how, unit, bank, mk) {
     } });
 }
 function wrap(c, t, x, y, mw, size) { c.font = `900 ${size}px Arial`; const w = t.split(' '); const lines = []; let l = ''; for (const s of w) { if (c.measureText(l + s).width > mw) { lines.push(l); l = ''; } l += s + ' '; } lines.push(l); lines.forEach((ln, i) => D.text(c, ln.trim(), x, y + (i - (lines.length - 1) / 2) * size * 1.2, size)); }
-quiz('patata', 'La patata caliente', 'El alcalde contesta antes de que explote la patata. Acertar da tiempo; fallar lo quita.', 'aciertos', PREGUNTAS, (q) => q && ({ q: q[0], opts: q[1], ok: q[2] }));
 quiz('diccionario', 'El diccionario', 'El padrino elige la definición correcta de cada palabra rara.', 'aciertos', DICCIONARIO, (q) => q && ({ q: '¿Qué significa «' + q[0] + '»?', opts: q[1], ok: q[2] }));
 
 // ============ ESPECIAL 2026 ============

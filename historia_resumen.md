@@ -1,0 +1,32 @@
+# Grand Prix (del verano), resumen de la historia que mandó Iker (17-oct-2026)
+Productora Europroducciones, director Francesco Boserman. La 1 de TVE y cadenas FORTA. 18 temporadas, 349 pueblos (1995-2026).
+Antecedente: Juegos sin fronteras (TVE 1988-1992; Guillermo Summers, Daniel Vindel, Isabel Gemio).
+
+## Etapas
+- 1995 «Cuando calienta el sol»: Ramón García; 4 pueblos (<5.000 hab.), colores azul, rojo, amarillo y verde; 30 vecinos + alcalde/alcaldesa + padrino/madrina famoso; 7 entregas, 2 semifinales (con repesca), final; premio 4.000.000 ptas + estandarte. Ganador Cudillero.
+- 1996-2005 «Grand Prix» TVE: Ramón García; 2 pueblos por programa (azul y amarillo); tabla general; final entre los 2 con más puntos; 6.000.000 ptas (desde 2002, 40.000 €), trofeo/estandarte/estatuilla. Plaza de toros + piscina + vaquilla. 2004: 10.º aniversario.
+- 2006: no se emite (Miriam Díaz-Aroca propuesta).
+- 2007-2009 FORTA: Bertín Osborne + Cristina Urgel (2007), Natalia Rodríguez (2008-2009); 30.000 €. 2007 Especial peques. 2009: versión portuguesa SIC «Todos Gostam do Verão» (Valdepeñas en especial).
+- 2023-2026 vuelta a La 1: Ramón García + Michelle Calvó (2023) + Cristinini (2023-2025); Wilbur (acróbata/cómico, 2023-act.); Mikecrack (2024-2025); Lalachus (2025-act.); Ángela Fernández (2025); Gorka Rodríguez (2026-act.).
+  - Sin vaquilla real: botarga de vaquilla (Supervaquilla, Miguel del Pozo) y T-rex botarga Nico (Nicolás Greco, 2023-2025).
+  - 2023: Supervaquilla como comodín: en la 1.ª prueba se ganan 1 o 2 comodines; el alcalde lo usa al inicio de una prueba para molestar al rival (lanzar objetos, agua, golpes, tapar visión, marear).
+  - 2024: Supervaquilla entra 30 s al sonar una campana.
+  - 2025: sin comodín; la vaquilla molesta en todas las pruebas. Nueva «Vaquilla dorada»: tarjeta por equipo; el alcalde la usa al inicio de cualquier prueba (salvo la final): si gana la prueba, +2 puntos extra.
+  - 2026: solo una Vaquilla dorada entre los dos equipos, se gana en «Pasión de capitanes».
+  - Mecánica actual: 2 pueblos (azul y amarillo) por programa, tabla general; los 4 primeros a semifinales (2 semis, sale 1 finalista de cada una); final: premio en metálico + trofeo.
+- Navidad 2024-25: «Grand Prix de la Navidad» (3 programas, ganadores y finalistas, Mikecrack; comodines por sorteo de cajas elegidas por los padrinos). Ganador Aguilar de Campoo.
+
+## Equipo (TVE)
+Azafatas/copresentadoras por año: Betty Liu, Jennifer Rope, Virginia Chávarri (1995), Mar Regueras (96-97), Miriam Domínguez (98), Pilar Soto (99), Elisa Andrea y Patricia Gallo (2000), Julia Alfaro (01), Oihana Etxebarria (02-03), Yaiza Guimaré, Feli Rodríguez, Susana Cantos, Susana Marca, Marta García, Anastassia Mineeva, Kateryna Borokh (04), María Rodríguez, Vanesa Rubio (05). Bailarinas (lista larga, cada año). Música: Eduardo Leiva (95-01), Danilo Vaona (02-05, 07-08), Federico Vaona (09, 2023-act.). Árbitros: Almudena Fernández, Diego Serrano, Brandy Rodríguez, Manuel Fonseca, Asunción Langa y Eduardo Vicente (2023-act.)... Azafatos: Jaime Rodríguez, Héctor del Moral, Manuel Fonseca, David Pérez... (2023-act.: Yoli Benito, Marcelo Cortazzo, Juan Carlos Meneses, Edgar R. García).
+NOTA: en el juego, usar personajes virtuales/originales (como en el resto de remakes), no parecidos reales.
+
+## Pruebas
+Zonas: plataformas móviles, piscina, (antes) plaza de toros. Trajes temáticos. Padrinos ayudan en algunas. Pruebas de conocimiento para alcaldes y padrinos: La patata caliente, El diccionario. Referencias a Intervilles y Takeshi's Castle (La rampa, Manos a la carta, Los troncos locos).
+- Con vaquilla: A un panal de rica miel…, Colón, Don Quijote y Dulcinea, El acueducto, El ciempiés, El desayuno, El estilita, El olivar, El sol de España, Eurovaquilla, Huevos fritos, La barbacoa, La brocheta, La pócima mágica, La torre de cristal, La vaca de las galaxias, La vaca pichichi, La vaca troyana, La vaquilla celosa, La vaquilla digital, La vaquilla floreada, Las lecheras, Los arcos, Los caballeros, Los dados, Los pintores, Los regadores, Los trogloditas, Menudas piezas, Prehistórix, Salvad el planeta, Superhéroes en apuros, Tarzán.
+- Físicas: Alicia en el país de las caidillas, Alicia en el país de las canastillas, Apicultura de altura, Ardillas pillas, Baloncesto en pañales, Bienvenidos a Tartópolis, Bolas acuáticas, Champions Prix, El desayuno elástico, El jardín colgante, El perrito piloto, Golf explosivo, La alfombra mágica, La cucaña, La cura de adelgazamiento, La guardería, La rampa, Los aguadores, Los bellota, Los coscorrones, Los panaderos, Los pingüinos, Los saltimbanquis, Los superbolos, Los tomatenores, Máquina del tiempo, Misión zanahoria, Paralelas infernales, Rompepuertas, Surfing Prix, Tiro al pingüi-pato, Vuelo supermosca, ¡Tronco va!
+- Piscina: Autocanasta, Carrera de tortugas, Crucero nupcial, Día de playa, El beso, El guateque, El Hotel Prix, El rompecabezas, El mundo perdido, Fiesta de pijamas, Gaviotas malotas, La gallina voladora, La heladería, La isla del tesoro, Las gladiadoras, Las hormigas, Los anillos, Los ki-monos, Los piratas, Los recoge-cocos, Los troncos locos, Luna de miel, Masterchof, Náufragos, Persecución acuática, Pista deslizante, Puzle acuático, Rollo de verano, Surf aéreo, Tomatazos, ¡Menuda galleta!, ¡Salta!, ¡Vamos a la playa!
+- Yincanas: Aquí sí hay playa, Caperucita y el lobo, Conejos y zanahorias, El señor de las vaquillas, En busca del oro, Fresas con nata, Hamsters a la carrera, Hormigas para siempre, Jurassic Prix, La antorcha olímpica, La espada mágica, La gallina clueca, La lavandería, La sandía, La vaquilla musical, La varita mágica, Los arqueolocos, Los bebés, Los bebés golosos, Los bichos, Los supercocineros, Los superfontaneros, Operación miau miau, Pim, pam, pum, Super fabada, ¡A vendimiar!
+- 2026: Pasión de capitanes (da la Vaquilla dorada).
+
+## Temporadas (ganador, cuota)
+1 1995 Cudillero 27,0% | 2 1996 Guijuelo 36,6% | 3 1997 Murchante 33,4% | 4 1998 Tordera 27,7% | 5 1999 El Bonillo 27,0% | 6 2000 Suances 24,5% | 7 2001 Nuevo Baztán 24,7% | 8 2002 Griñón 30,1% | 9 2003 Los Molinos 27,2% | 10 2004 Falces 23,3% | 11 2005 Carrión de los Condes 19,2% | 12 2007 Ricote 12,0% | Especial peques 2007 Comunidad de Madrid | 13 2008 Ador 13,0% | 14 2009 Renedo de Esgueva 9,8% | 15 2023 Alfacar 19,2% | 16 2024 Olvera 12,2% | Navidad 2024 Aguilar de Campoo 8,0% | 17 2025 San Sebastián de la Gomera 12,4% | 18 2026 Quintanar del Rey 12,7%. Total 202 entregas.
